@@ -11,18 +11,19 @@ const uint8_t grid_x = 5;
 const uint8_t grid_y = 5;
 
 int player_score = 0;
-uint8_t player_x = 2;
-uint8_t player_y = 4;
+int player_x = 2;
+int player_y = 4;
 bool player_left = false;
 bool player_right = false;
 
 bool object_alive = false;
-uint8_t object_x = 0;
-uint8_t object_x_spawn = 2;
-uint8_t object_y = 0;
+int object_x = 0;
+int object_x_spawn = 2;
+int object_y = 0;
+bool randomObjectX = false; // enable/disable random x position
 
 // how many ticks the object waits until falling down
-int object_wait_move = 10;
+int object_wait_move = 5;
 int object_wait_death = 5;
 int object_cur = 0; // timer that decreases
 
@@ -42,11 +43,16 @@ void setup() {
   pinMode(buttonA, INPUT);
   pinMode(buttonB, INPUT);
 
-  // set initial 
+  // set initial values
   object_alive = false;
   object_y = 0;
   object_x = object_x_spawn;
   object_cur = object_wait_move;
+
+  // set random seed
+  // if nothing connected to this pin,
+  // noise will generate a random seed
+  randomSeed(analogRead(0));
 
   microbit.begin();
   microbit.show(microbit.HEART);
@@ -118,9 +124,11 @@ void spawnObject() {
 
   object_cur = object_wait_move;
 
-  // TODO: randomly select spawn location
+  // reset y-position
   object_y = 0;
-  object_x = object_x_spawn;
+
+  // randomly select spawn location
+  object_x = getRandomXSpawn();
   object_alive = true;
 }
 
@@ -135,19 +143,41 @@ void moveObject() {
 
   object_cur = object_wait_move;
 
-  // TODO: randomly move right/left
-  object_x = 2;
+  // randomly move right/left if possible and
+  // do not get random location for the last row
+  if (randomObjectX && object_y < grid_y - 2) {
+    object_x = getRandomX(object_x);
+  }
 
   object_y++;
   if (object_y == player_y && object_x == player_x) {
     // player kills object and gets a point
     killObject(1);
   }
-  else if (object_y > grid_y) {
+  else if (object_y > grid_y-1) {
     // player didn't catch object
     // TODO: should the player lose?
     killObject(0);
   }
+}
+
+
+// Generate a random value on the x-axis for spawn location.
+int getRandomXSpawn() {
+  return random(0, grid_x);
+}
+
+// Get next or previous value of the given randomly.
+int getRandomX(int curX) {
+  int dir = -1;
+  if (random(0,10) < 5) {
+    dir = 1;
+  }
+  int newX = curX + dir;
+  if (newX >= 0 && newX < grid_x) {
+    return newX;
+  }
+  return curX;
 }
 
 
