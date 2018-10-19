@@ -15,6 +15,7 @@ int player_x = 2;
 int player_y = 4;
 bool player_left = false;
 bool player_right = false;
+bool showScore = false;
 
 bool object_alive = false;
 int object_x = 0;
@@ -25,6 +26,7 @@ bool randomObjectX = false; // enable/disable random x position
 // how many ticks the object waits until falling down
 int object_wait_move = 5;
 int object_wait_death = 5;
+int object_wait_killed = 10; // how long to wait if player killed it
 int object_cur = 0; // timer that decreases
 
 uint8_t gamescreen[] =
@@ -61,7 +63,9 @@ void setup() {
 
 void loop() {
 
-  CheckPlayerMovement();
+  if (!showScore) {
+    CheckPlayerMovement();
+  }
   ObjectUpdate();
   RenderScene();
 
@@ -130,12 +134,17 @@ void spawnObject() {
   // randomly select spawn location
   object_x = getRandomXSpawn();
   object_alive = true;
+  showScore = false;
 }
 
 void killObject(int playerPoints) {
 
   player_score += playerPoints;
   object_cur = object_wait_death;
+  if (playerPoints > 0) {
+    object_cur = object_wait_killed;
+    showScore = true;
+  }
   object_alive = false;
 }
 
@@ -182,6 +191,17 @@ int getRandomX(int curX) {
 
 
 void RenderScene() {
+
+  if (showScore) {
+    microbit.print(player_score);
+
+    // reset instantly because
+    // printing such numbers takes longer
+    if (player_score > 9) {
+      object_cur = 0;
+    }
+    return;
+  }
 
   for (uint8_t y = 0; y < grid_y; y++) {
     uint8_t curRow = B00000;
