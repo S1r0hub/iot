@@ -1,5 +1,5 @@
 #include <Adafruit_Microbit.h>
-#include <Adafruit_GFX.h>
+//#include <Adafruit_GFX.h>
 
 Adafruit_Microbit_Matrix microbit;
 
@@ -222,6 +222,7 @@ int speedWaitRemove(int current_score) {
     decrease_after = 3;
 
     if (object_wait_move > object_wait_move_init * 0.5) {
+      randomObjectX = true;
       return 2;
     }
 
@@ -229,6 +230,7 @@ int speedWaitRemove(int current_score) {
     decrease_after = 4;
     
     if (object_wait_move > 5) {
+      randomObjectX = false;
       return 1;
     }
   }
@@ -309,8 +311,8 @@ void moveObject() {
   object_cur = object_wait_move;
 
   // randomly move right/left if possible and
-  // do not get random location for the last row
-  if (randomObjectX && object_y < grid_y - 2) {
+  // do not get random location for the last 2 rows
+  if (randomObjectX && object_y < grid_y - 3) {
     object_x = getRandomX(object_x);
   }
 
