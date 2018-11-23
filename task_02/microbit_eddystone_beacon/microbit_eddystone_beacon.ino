@@ -53,7 +53,7 @@ void setup() {
 //int amin = 9999999;
 //int amax = -9999999;
 
-int diffTime = 50;
+int diffTime = 100;
 float valx_p = 0;
 float valy_p = 0;
 float valz_p = 0;
@@ -137,7 +137,7 @@ void loop() {
     else {
       if (gotUp && !gotBreak) {
         breakTime++;
-        if (breakTime > 4); {
+        if (breakTime > 1) {
           gotBreak = true;
         }
       }
