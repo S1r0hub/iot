@@ -145,6 +145,7 @@ void loop() {
       broadcasting = true;
       broadcasting_start = millis();
 
+      //delay(1000);
       eddystoneBeacon.setURI(rps_names[selection]);
       //eddystoneBeacon.begin(-18, rps_names[selection]); // power, URI
       Serial.print("Eddystone Beacon begin with: ");
