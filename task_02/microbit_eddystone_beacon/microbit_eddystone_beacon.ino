@@ -5,6 +5,9 @@
 // FOR H AND CPP FILES SEE:
 // https://github.com/sandeepmistry/arduino-BLEPeripheral/tree/master/src
 
+// For Micro Bit Board use:
+// https://sandeepmistry.github.io/arduino-nRF5/package_nRF5_boards_index.json
+
 
 // Import libraries (EddystoneBeacon depends on SPI)
 #include <SPI.h>
