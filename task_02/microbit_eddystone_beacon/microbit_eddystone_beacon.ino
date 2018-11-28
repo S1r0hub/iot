@@ -149,9 +149,11 @@ void loop() {
       //eddystoneBeacon.begin(-18, rps_names[selection]); // power, URI
       Serial.print("Eddystone Beacon begin with: ");
       Serial.println(rps_names[selection]);
-      
+
+      microbit.matrix.clear();
+      delay(1000);
       microbit.matrix.show(check);
-      delay(100);
+      delay(500);
     }
   }
 
